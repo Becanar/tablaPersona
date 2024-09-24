@@ -13,16 +13,16 @@ public class Person {
     private String lastName;
     private LocalDate birthDate;
 
-    // An enum for age categories
     public enum AgeCategory {
         BABY, CHILD, TEEN, ADULT, SENIOR, UNKNOWN
     };
 
     public Person() {
-        this(null, null, null);
+        this(0,null, null, null);
     }
 
-    public Person(String firstName, String lastName, LocalDate birthDate) {
+    public Person(int personId,String firstName, String lastName, LocalDate birthDate) {
+        this.personId = personId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;

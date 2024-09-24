@@ -16,12 +16,12 @@ import org.example.ejerciciopersona.PersonTableUtil;
 import static javafx.scene.control.TableView.TableViewSelectionModel;
 
 public class TableViewAddDeleteRows extends Application {
-    // Fields to add Person details
     private TextField fNameField;
     private TextField lNameField;
     private DatePicker dobField;
     private TableView<Person> table;
-
+    private Label lblError;
+    private int nextId = 6;
     public static void main(String[] args) {
         Application.launch(args);
     }
@@ -38,10 +38,8 @@ public class TableViewAddDeleteRows extends Application {
         Tooltip tp1=new Tooltip("Select the date");
         Tooltip.install(dobField,tp1);
         table = new TableView<>(PersonTableUtil.getPersonList());
-        // Turn on multi-row selection for the TableView
         TableViewSelectionModel<Person> tsm = table.getSelectionModel();
         tsm.setSelectionMode(SelectionMode.MULTIPLE);
-        // Add columns to the TableView
         table.getColumns().addAll(PersonTableUtil.getIdColumn(), PersonTableUtil.getFirstNameColumn(), PersonTableUtil.getLastNameColumn(), PersonTableUtil.getBirthDateColumn());
         GridPane newDataPane  = this.getNewPersonDataPane();
         Button restoreBtn = new Button("Restore Rows");
@@ -52,7 +50,7 @@ public class TableViewAddDeleteRows extends Application {
         Tooltip tp3=new Tooltip("Delete the selected row");
         Tooltip.install(deleteBtn,tp3);
         deleteBtn.setOnAction(e -> deleteSelectedRows());
-        Label lblError=new Label();
+        lblError=new Label();
         lblError.setVisible(false);
         VBox root = new VBox(newDataPane, new HBox(restoreBtn, deleteBtn),lblError, table);
         root.setSpacing(5);
@@ -83,16 +81,18 @@ public class TableViewAddDeleteRows extends Application {
         Tooltip tp=new Tooltip("Add the Person to the table");
         Tooltip.install(addBtn,tp);
         addBtn.setOnAction(e -> addPerson());
-        // Add the "Add" button
         pane.add(addBtn, 2, 0);
         return pane;
     }
-    private boolean txtValido(String txt){
-        for(int i=0;i<txt.length();i++){
-            //if(txt[i]>)
+    private boolean txtValido(String txt) {
+        for (int i = 0; i < txt.length(); i++) {
+            if (!Character.isLetter(txt.charAt(i))) {
+                return false;
+            }
         }
         return true;
     }
+
 
     public void deleteSelectedRows() {
         TableViewSelectionModel<Person> tsm = table.getSelectionModel();
@@ -100,32 +100,67 @@ public class TableViewAddDeleteRows extends Application {
             System.out.println("Please select a row to delete.");
             return;
         }
-        // Get all selected row indices in an array
+
         ObservableList<Integer> list = tsm.getSelectedIndices();
         Integer[] selectedIndices = new Integer[list.size()];
         selectedIndices = list.toArray(selectedIndices);
-        // Sort the array
+
         Arrays.sort(selectedIndices);
-        // Delete rows (last to first)
+
         for(int i = selectedIndices.length - 1; i >= 0; i--) {
             tsm.clearSelection(selectedIndices[i].intValue());
             table.getItems().remove(selectedIndices[i].intValue());
         }
+        recalculateID();
+    }
+
+    private void recalculateID() {
+        int id = 1; // Reinicia los IDs desde 1 o el valor que desees
+        for (Person person : table.getItems()) {
+            person.setPersonId(id++);
+        }
+        nextId=id;
     }
 
     public void restoreRows() {
         table.getItems().clear();
         table.getItems().addAll(PersonTableUtil.getPersonList());
+        recalculateID();
     }
 
     public Person getPerson() {
-        return new Person(fNameField.getText(), lNameField.getText(), dobField.getValue());
+        return new Person(nextId++,fNameField.getText(), lNameField.getText(), dobField.getValue());
     }
 
     public void addPerson() {
+        lblError.setVisible(false);
+        lblError.setText("");
+        String firstName = fNameField.getText();
+        String lastName = lNameField.getText();
+        if (!txtValido(firstName)) {
+            lblError.setText("ERROR! NOMBRE NO VÁLIDO");
+            lblError.setVisible(true);
+            lblError.setStyle("-fx-text-fill: red;");
+            return;
+        }
+        if (!txtValido(lastName)) {
+            lblError.setText("ERROR! APELLIDO NO VÁLIDO");
+            lblError.setVisible(true);
+            lblError.setStyle("-fx-text-fill: red;");
+            return;
+        }
+        if (dobField.getValue() == null) {
+            lblError.setText("ERROR! FECHA NO VÁLIDA");
+            lblError.setVisible(true);
+            lblError.setStyle("-fx-text-fill: red;");
+            return;
+        }
         Person p = getPerson();
         table.getItems().add(p);
         clearFields();
+        lblError.setText("Persona agregada correctamente.");
+        lblError.setStyle("-fx-text-fill: green;");
+        lblError.setVisible(true);
     }
 
     public void clearFields() {

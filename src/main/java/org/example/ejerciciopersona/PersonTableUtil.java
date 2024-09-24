@@ -6,13 +6,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class PersonTableUtil {
+    private static int idCounter = 1;
     /* Returns an observable list of persons */
     public static ObservableList<Person> getPersonList() {
-        Person p1 = new Person("Ashwin", "Sharan", LocalDate.of(2012, 10, 11));
-        Person p2 = new Person("Advik", "Sharan", LocalDate.of(2012, 10, 11));
-        Person p3 = new Person("Layne", "Estes", LocalDate.of(2011, 12, 16));
-        Person p4 = new Person("Mason", "Boyd", LocalDate.of(2003, 4, 20));
-        Person p5 = new Person("Babalu", "Sharan", LocalDate.of(1980, 1, 10));
+        Person p1 = new Person(idCounter++,"Ashwin", "Sharan", LocalDate.of(2012, 10, 11));
+        Person p2 = new Person(idCounter++,"Advik", "Sharan", LocalDate.of(2012, 10, 11));
+        Person p3 = new Person(idCounter++,"Layne", "Estes", LocalDate.of(2011, 12, 16));
+        Person p4 = new Person(idCounter++,"Mason", "Boyd", LocalDate.of(2003, 4, 20));
+        Person p5 = new Person(idCounter++,"Babalu", "Sharan", LocalDate.of(1980, 1, 10));
         return FXCollections.<Person>observableArrayList(p1, p2, p3, p4, p5);
     }
 
@@ -43,4 +44,5 @@ public class PersonTableUtil {
         bDateCol.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
         return bDateCol;
     }
+
 }
