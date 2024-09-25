@@ -106,11 +106,14 @@ public class TableViewAddDeleteRows extends Application {
     }
     /**
      * Verifica si el texto dado es válido (solo letras).
-     *
+     * No vale que esté vacío.
      * @param txt Texto a verificar.
      * @return true si el texto es válido; false en caso contrario.
      */
     private boolean txtValido(String txt) {
+        if(txt.length()==0){
+            return false;
+        }
         for (int i = 0; i < txt.length(); i++) {
             if (!Character.isLetter(txt.charAt(i))) {
                 return false;
