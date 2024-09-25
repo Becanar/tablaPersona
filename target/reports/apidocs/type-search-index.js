@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"org.example.ejerciciopersona","l":"Person.AgeCategory"},{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.example.ejerciciopersona","l":"Person"},{"p":"org.example.ejerciciopersona","l":"PersonTableUtil"},{"p":"org.example.ejerciciopersona","l":"TableViewAddDeleteRows"}];updateSearchResults();
